@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>👨‍🍳 Burger Party — Cuisine</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Dancing+Script:wght@700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#f5f0e8;min-height:100vh;font-family:'Lato',sans-serif;color:#3d1a08;}
+
+.lock-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px;background:#f5f0e8;}
+.lock-card{background:#fff;border-radius:16px;border:2px solid #c8a84b;padding:30px 24px;text-align:center;max-width:320px;width:100%;box-shadow:0 4px 20px rgba(139,94,42,0.15);}
+.lock-icon{font-family:'Playfair Display',serif;font-size:1rem;color:#8B6914;letter-spacing:3px;margin-bottom:12px;}
+.lock-title{font-family:'Dancing Script',cursive;font-size:1.8rem;color:#5a2008;margin-bottom:4px;}
+.lock-sub{font-size:0.85rem;color:#8B6914;margin-bottom:20px;font-style:italic;}
+.pin-display{display:flex;justify-content:center;gap:10px;margin-bottom:20px;}
+.pin-dot{width:16px;height:16px;border-radius:50%;border:2px solid #c8a84b;background:transparent;transition:all 0.2s;}
+.pin-dot.filled{background:#8B6914;}
+.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+.pin-btn{padding:14px;border:1.5px solid #c8a84b;border-radius:10px;background:#fffdf0;color:#5a2008;font-family:'Playfair Display',serif;font-size:1.3rem;cursor:pointer;transition:all 0.15s;}
+.pin-btn:active{background:#8B6914;color:#fff8e7;transform:scale(0.95);}
+.pin-clear{background:#fff0f0;color:#c0392b;border:1.5px solid #e8c4c4;border-radius:10px;padding:10px;width:100%;font-family:'Playfair Display',serif;font-size:0.9rem;cursor:pointer;}
+.pin-error{color:#c0392b;font-size:0.85rem;margin-top:8px;min-height:20px;font-style:italic;}
+.lock-card.shake{animation:shake 0.4s ease;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-8px);}75%{transform:translateX(8px);};}
+
+.dashboard{display:none;padding:12px;}
+
+.hdr{background:#fff;border-radius:12px;border:2px solid #c8a84b;padding:12px 16px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 8px rgba(139,94,42,0.1);}
+.hdr-title{font-family:'Dancing Script',cursive;font-size:1.6rem;color:#5a2008;}
+.hdr-sub{font-size:0.72rem;color:#8B6914;font-style:italic;margin-top:2px;}
+.hdr-right{display:flex;align-items:center;gap:8px;}
+.live-dot{width:8px;height:8px;border-radius:50%;background:#27ae60;box-shadow:0 0 6px #27ae60;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;};}
+.refresh-btn{background:#8B6914;color:#fff8e7;border:none;border-radius:8px;padding:6px 12px;font-family:'Playfair Display',serif;font-size:0.8rem;cursor:pointer;letter-spacing:1px;}
+.lock-btn{background:#fff0f0;color:#c0392b;border:1.5px solid #e8c4c4;border-radius:8px;padding:6px 10px;font-family:'Playfair Display',serif;font-size:0.75rem;cursor:pointer;}
+
+.status-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+.sc{border-radius:10px;padding:10px 8px;text-align:center;border:2px solid;}
+.sc.attente{background:#fffbf0;border-color:#f39c12;color:#f39c12;}
+.sc.encours{background:#fff8f0;border-color:#e67e22;color:#e67e22;}
+.sc.pret{background:#f0fff4;border-color:#27ae60;color:#27ae60;}
+.sc .num{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;}
+.sc .lbl{font-size:0.7rem;letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+
+.recipe-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+.rc{background:#fff;border-radius:10px;padding:10px 12px;border:2px solid #c8a84b;display:flex;align-items:center;gap:10px;box-shadow:0 1px 4px rgba(139,94,42,0.08);}
+.rc-img{width:40px;height:40px;object-fit:contain;}
+.rc-name{font-family:'Playfair Display',serif;font-size:0.78rem;color:#5a2008;}
+.rc-num{font-family:'Playfair Display',serif;font-size:1.4rem;color:#8B6914;font-weight:700;line-height:1;}
+
+.settings{background:#fff;border-radius:10px;padding:10px 14px;margin-bottom:12px;border:1.5px solid #c8a84b;display:flex;align-items:center;gap:10px;flex-wrap:wrap;box-shadow:0 1px 4px rgba(139,94,42,0.08);}
+.settings span{font-size:0.82rem;color:#8B6914;font-style:italic;}
+.settings input{background:#fffdf0;border:1.5px solid #c8a84b;border-radius:6px;color:#5a2008;padding:4px 8px;width:55px;font-family:'Lato',sans-serif;font-size:0.9rem;text-align:center;outline:none;}
+
+.section-title{font-family:'Playfair Display',serif;font-style:italic;font-size:0.9rem;color:#8B6914;letter-spacing:2px;margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.section-title::before{content:'✦';font-style:normal;font-size:0.7rem;}
+.section-title::after{content:'';flex:1;height:1px;background:linear-gradient(to right,#c8a84b,transparent);}
+
+.orders-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;}
+
+/* CARTE NORMALE */
+.order-card{background:#fff;border-radius:12px;padding:14px;border:2px solid;box-shadow:0 2px 8px rgba(0,0,0,0.06);transition:all 0.3s;}
+.order-card.green{border-color:#27ae60;}
+.order-card.yellow{border-color:#f39c12;}
+.order-card.red{border-color:#e74c3c;animation:urgent 1.5s infinite;}
+@keyframes urgent{0%,100%{box-shadow:0 2px 8px rgba(0,0,0,0.06);}50%{box-shadow:0 0 16px rgba(231,76,60,0.4);};}
+
+/* CARTE PRÊTE — RÉDUITE */
+.order-card.done{
+  border-color:#27ae60;background:#f0fff4;
+  padding:10px 14px;cursor:pointer;
+  opacity:0.75;
+}
+.order-card.done:active{opacity:1;}
+.done-summary{display:flex;align-items:center;justify-content:space-between;}
+.done-name{font-family:'Dancing Script',cursive;font-size:1.2rem;color:#27ae60;}
+.done-info{font-size:0.8rem;color:#27ae60;font-style:italic;}
+.done-expand{font-size:0.7rem;color:#aaa;font-style:italic;}
+.done-detail{display:none;margin-top:10px;padding-top:10px;border-top:1px dashed #c8e6c9;}
+.order-card.done.expanded .done-detail{display:block;}
+.order-card.done.expanded{opacity:1;}
+
+.format-badge{display:inline-block;padding:3px 12px;border-radius:20px;font-family:'Playfair Display',serif;font-size:0.78rem;font-weight:700;letter-spacing:1px;margin-bottom:8px;}
+.format-badge.adulte{background:#e8f4fd;color:#2980b9;border:1.5px solid #2980b9;}
+.format-badge.enfant{background:#fef9e7;color:#d35400;border:1.5px solid #d35400;}
+
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;}
+.card-name{font-family:'Dancing Script',cursive;font-size:1.4rem;color:#5a2008;}
+.card-num{font-size:0.72rem;color:#aaa;background:#f5f0e8;padding:2px 8px;border-radius:20px;margin-top:4px;}
+.card-cuisson{font-size:1.05rem;font-weight:700;margin-bottom:8px;}
+
+.retires-block{background:#fff5f5;border:2px solid #e74c3c;border-radius:8px;padding:8px 10px;margin-bottom:8px;}
+.retires-title{font-family:'Playfair Display',serif;font-size:0.78rem;color:#e74c3c;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+.retires-list{font-family:'Lato',sans-serif;font-size:0.95rem;font-weight:700;color:#c0392b;line-height:1.5;}
+
+.card-comment{font-size:0.82rem;color:#888;font-style:italic;margin-bottom:8px;}
+
+.timer-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.timer-bar-bg{flex:1;height:6px;background:#eee;border-radius:3px;overflow:hidden;}
+.timer-bar{height:100%;border-radius:3px;transition:width 1s linear,background 0.5s;}
+.timer-time{font-family:'Playfair Display',serif;font-size:0.9rem;min-width:50px;text-align:right;}
+.order-card.green .timer-time{color:#27ae60;}
+.order-card.yellow .timer-time{color:#f39c12;}
+.order-card.red .timer-time{color:#e74c3c;}
+
+.status-btns{display:flex;gap:6px;}
+.sbtn{flex:1;padding:7px;border:none;border-radius:8px;font-family:'Playfair Display',serif;font-size:0.75rem;cursor:pointer;transition:all 0.15s;letter-spacing:1px;opacity:0.3;}
+.sbtn.active{opacity:1;}
+.sbtn.attente{background:#f39c12;color:#fff;}
+.sbtn.encours{background:#e67e22;color:#fff;}
+.sbtn.pret{background:#27ae60;color:#fff;}
+.sbtn:active{transform:scale(0.95);}
+
+.empty{text-align:center;padding:4rem 1rem;color:#c8a84b;}
+.empty .big{font-family:'Dancing Script',cursive;font-size:2.5rem;margin-bottom:12px;}
+.empty p{font-size:0.9rem;font-style:italic;}
+.err-banner{background:#fff5f5;border:1.5px solid #e74c3c;border-radius:8px;padding:8px 12px;margin-bottom:10px;color:#c0392b;font-size:0.85rem;display:none;font-style:italic;}
+</style>
+</head>
+<body>
+
+<div class="lock-screen" id="lock-screen">
+  <div class="lock-card" id="lock-card">
+    <div class="lock-icon">✦ CUISINE ✦</div>
+    <div class="lock-title">Burger Party</div>
+    <div class="lock-sub">Entre ton code PIN</div>
+    <div class="pin-display">
+      <div class="pin-dot" id="d0"></div><div class="pin-dot" id="d1"></div>
+      <div class="pin-dot" id="d2"></div><div class="pin-dot" id="d3"></div>
+    </div>
+    <div class="pin-pad">
+      <button class="pin-btn" onclick="addPin('1')">1</button>
+      <button class="pin-btn" onclick="addPin('2')">2</button>
+      <button class="pin-btn" onclick="addPin('3')">3</button>
+      <button class="pin-btn" onclick="addPin('4')">4</button>
+      <button class="pin-btn" onclick="addPin('5')">5</button>
+      <button class="pin-btn" onclick="addPin('6')">6</button>
+      <button class="pin-btn" onclick="addPin('7')">7</button>
+      <button class="pin-btn" onclick="addPin('8')">8</button>
+      <button class="pin-btn" onclick="addPin('9')">9</button>
+      <button class="pin-btn" onclick="addPin('0')" style="grid-column:2;">0</button>
+    </div>
+    <button class="pin-clear" onclick="clearPin()">⌫ Effacer</button>
+    <div class="pin-error" id="pin-error"></div>
+  </div>
+</div>
+
+<div class="dashboard" id="dashboard">
+  <div class="hdr">
+    <div>
+      <div class="hdr-title">Burger Party</div>
+      <div class="hdr-sub" id="last-refresh">Connexion en cours...</div>
+    </div>
+    <div class="hdr-right">
+      <div class="live-dot"></div>
+      <button class="refresh-btn" onclick="loadOrders()">↻ Actualiser</button>
+      <button class="lock-btn" onclick="lockDashboard()">Verrouiller</button>
+    </div>
+  </div>
+
+  <div class="status-row">
+    <div class="sc attente"><div class="num" id="cnt-attente">0</div><div class="lbl">Attente</div></div>
+    <div class="sc encours"><div class="num" id="cnt-encours">0</div><div class="lbl">En cours</div></div>
+    <div class="sc pret"><div class="num" id="cnt-pret">0</div><div class="lbl">Prêt</div></div>
+  </div>
+
+  <div class="recipe-row">
+    <div class="rc">
+      <img class="rc-img" src="https://bouisbouis2-design.github.io/burger-party/saint-nec.png" alt="Saint Nec"/>
+      <div><div class="rc-name">Le Saint Nec</div><div class="rc-num" id="cnt-saintnec">0</div></div>
+    </div>
+    <div class="rc">
+      <img class="rc-img" src="https://bouisbouis2-design.github.io/burger-party/original.png" alt="Original"/>
+      <div><div class="rc-name">L'Original</div><div class="rc-num" id="cnt-original">0</div></div>
+    </div>
+  </div>
+
+  <div class="settings">
+    <span>Temps cible :</span>
+    <input type="number" id="target-time" value="10" min="1" max="60"/>
+    <span>min &nbsp;|&nbsp; 🟢 &lt;60% · 🟡 60–90% · 🔴 &gt;90%</span>
+  </div>
+
+  <div class="err-banner" id="err-banner">Erreur de connexion</div>
+  <div class="section-title">Commandes en cours</div>
+  <div class="orders-grid" id="orders-list">
+    <div class="empty"><div class="big">En attente...</div><p>Les commandes apparaîtront ici</p></div>
+  </div>
+</div>
+
+<script>
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycby8AIAOUy7ZfPOF4uxh_UA6BgUTeHGyHXWdQUzZs1qfKhxCRwGYxULgYW5nW5Q_RXeDRw/exec';
+const BASE='https://bouisbouis2-design.github.io/burger-party/';
+const PIN='0410';
+let pinEntry='',orders=[],knownCount=0,statuts={},expandedKeys=new Set();
+
+function addPin(d){if(pinEntry.length>=4)return;pinEntry+=d;updateDots();if(pinEntry.length===4)checkPin();}
+function clearPin(){pinEntry=pinEntry.slice(0,-1);updateDots();document.getElementById('pin-error').textContent='';}
+function updateDots(){for(let i=0;i<4;i++)document.getElementById('d'+i).classList.toggle('filled',i<pinEntry.length);}
+function checkPin(){
+  if(pinEntry===PIN){
+    document.getElementById('lock-screen').style.display='none';
+    document.getElementById('dashboard').style.display='block';
+    loadOrders();
+  }else{
+    document.getElementById('pin-error').textContent='Code incorrect, réessaie !';
+    document.getElementById('lock-card').classList.add('shake');
+    setTimeout(()=>{document.getElementById('lock-card').classList.remove('shake');pinEntry='';updateDots();},500);
+  }
+}
+function lockDashboard(){
+  pinEntry='';updateDots();
+  document.getElementById('pin-error').textContent='';
+  document.getElementById('dashboard').style.display='none';
+  document.getElementById('lock-screen').style.display='flex';
+}
+
+function playBeep(){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    [880,660,880].forEach((f,i)=>{
+      const o=ctx.createOscillator(),g=ctx.createGain();
+      o.connect(g);g.connect(ctx.destination);
+      o.frequency.value=f;
+      g.gain.setValueAtTime(0.3,ctx.currentTime+i*0.15);
+      g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+i*0.15+0.13);
+      o.start(ctx.currentTime+i*0.15);o.stop(ctx.currentTime+i*0.15+0.13);
+    });
+  }catch(e){}
+}
+
+async function loadOrders(){
+  try{
+    const resp=await fetch(SCRIPT_URL+'?action=read&t='+Date.now());
+    const data=await resp.json();
+    document.getElementById('err-banner').style.display='none';
+    if(data.rows&&data.rows.length>0){
+      const newOrders=data.rows.map((r,i)=>{
+        const key=r[0]+'_'+r[1];
+        return{id:i,key,horodatage:new Date(r[0]),prenom:r[1]||'?',format:r[2]||'',recette:r[3]||'',cuisson:r[4]||'',retires:r[5]||'',commentaire:r[6]||'',statut:statuts[key]||'attente'};
+      });
+      if(newOrders.length>knownCount&&knownCount>0)playBeep();
+      knownCount=newOrders.length;orders=newOrders;
+    }else{orders=[];knownCount=0;}
+    document.getElementById('last-refresh').textContent='Mis à jour : '+new Date().toLocaleTimeString('fr-FR');
+    render();
+  }catch(e){
+    document.getElementById('err-banner').style.display='block';
+    document.getElementById('last-refresh').textContent='Erreur — '+new Date().toLocaleTimeString('fr-FR');
+  }
+}
+
+function setStatus(key,statut){statuts[key]=statut;orders.find(o=>o.key===key).statut=statut;render();}
+function toggleExpand(key){if(expandedKeys.has(key))expandedKeys.delete(key);else expandedKeys.add(key);render();}
+
+function getColor(h,s){
+  if(s==='pret')return'done';
+  const t=(parseInt(document.getElementById('target-time').value)||10)*60000;
+  const p=(Date.now()-h)/t;
+  return p>=0.9?'red':p>=0.6?'yellow':'green';
+}
+function getTimerInfo(h){
+  const t=(parseInt(document.getElementById('target-time').value)||10)*60000;
+  const elapsed=Date.now()-h;
+  const pct=Math.min(elapsed/t,1);
+  const rem=Math.max(t-elapsed,0);
+  const mm=Math.floor(rem/60000).toString().padStart(2,'0');
+  const ss=Math.floor((rem%60000)/1000).toString().padStart(2,'0');
+  const barColor=pct>=0.9?'#e74c3c':pct>=0.6?'#f39c12':'#27ae60';
+  return{pct,mm,ss,barColor};
+}
+function cuissonColor(c){return c==='Saignant'?'#e74c3c':c==='À point'?'#8B4513':c==='Bien cuit'?'#1a1a1a':'#8B6914';}
+function burgerImg(r){return BASE+(r==='Le Saint Nec'?'saint-nec':'original')+'.png';}
+
+function render(){
+  let saintnec=0,original=0,attente=0,encours=0,pret=0;
+  orders.forEach(o=>{
+    if(o.statut!=='pret'){if(o.recette==='Le Saint Nec')saintnec++;else original++;}
+    if(o.statut==='attente')attente++;else if(o.statut==='encours')encours++;else pret++;
+  });
+  document.getElementById('cnt-saintnec').textContent=saintnec;
+  document.getElementById('cnt-original').textContent=original;
+  document.getElementById('cnt-attente').textContent=attente;
+  document.getElementById('cnt-encours').textContent=encours;
+  document.getElementById('cnt-pret').textContent=pret;
+
+  if(orders.length===0){
+    document.getElementById('orders-list').innerHTML='<div class="empty"><div class="big">En attente...</div><p>Les commandes apparaîtront ici</p></div>';
+    return;
+  }
+
+  const priority={red:0,yellow:1,green:2,done:3};
+  const sorted=[...orders].sort((a,b)=>priority[getColor(a.horodatage,a.statut)]-priority[getColor(b.horodatage,b.statut)]);
+
+  document.getElementById('orders-list').innerHTML=sorted.map((o,idx)=>{
+    const color=getColor(o.horodatage,o.statut);
+    const{pct,mm,ss,barColor}=getTimerInfo(o.horodatage);
+    const barWidth=Math.round(pct*100);
+    const hasRetires=o.retires&&o.retires!=='Aucun'&&o.retires!=='';
+    const formatClass=o.format==='Enfant'?'enfant':'adulte';
+
+    // CARTE PRÊTE — RÉDUITE
+    if(color==='done'){
+      return`<div class="order-card done ${expandedKeys.has(o.key)?'expanded':''}" >
+        <div class="done-summary" onclick="toggleExpand('${o.key}')">
+          <div>
+            <span style="font-size:0.75rem;color:#27ae60;font-family:'Playfair Display',serif;margin-right:6px;">#${idx+1}</span>
+            <span class="done-name">${o.prenom}</span>
+            <span style="font-size:0.8rem;color:#27ae60;margin-left:8px;">✓ Servi · ${o.recette} · ${o.cuisson}</span>
+          </div>
+          <span class="done-expand">${expandedKeys.has(o.key)?'▲':'▼'}</span>
+        </div>
+        <div class="done-detail">
+          <div class="format-badge ${formatClass}">${o.format}</div>
+          <img src="${burgerImg(o.recette)}" style="width:80px;height:80px;object-fit:contain;display:block;margin:6px 0;"/>
+          <div class="card-cuisson" style="color:${cuissonColor(o.cuisson)};font-size:1rem;font-weight:700;">${o.cuisson}</div>
+          ${hasRetires?`<div class="retires-block"><div class="retires-title">Sans :</div><div class="retires-list">${o.retires}</div></div>`:''}
+          ${o.commentaire?`<div class="card-comment">${o.commentaire}</div>`:''}
+          <div class="status-btns" style="margin-top:8px;">
+            <button class="sbtn attente" onclick="event.stopPropagation();setStatus('${o.key}','attente')">Attente</button>
+            <button class="sbtn encours" onclick="event.stopPropagation();setStatus('${o.key}','encours')">En cours</button>
+            <button class="sbtn pret active" onclick="event.stopPropagation();setStatus('${o.key}','pret')">Prêt</button>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    // CARTE NORMALE
+    return`<div class="order-card ${color}">
+      <div class="format-badge ${formatClass}">${o.format}</div>
+      <div class="card-top">
+        <div class="card-name">${o.prenom}</div>
+        <div class="card-num">#${idx+1}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+        <img src="${burgerImg(o.recette)}" style="width:150px;height:150px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.1));"/>
+      </div>
+      <div class="card-cuisson" style="color:${cuissonColor(o.cuisson)};">${o.cuisson}</div>
+      ${hasRetires?`<div class="retires-block"><div class="retires-title">⛔ Sans :</div><div class="retires-list">${o.retires}</div></div>`:''}
+      ${o.commentaire?`<div class="card-comment">💬 ${o.commentaire}</div>`:''}
+      <div class="timer-row">
+        <div class="timer-bar-bg"><div class="timer-bar" style="width:${barWidth}%;background:${barColor};"></div></div>
+        <div class="timer-time">${mm}:${ss}</div>
+      </div>
+      <div class="status-btns">
+        <button class="sbtn attente ${o.statut==='attente'?'active':''}" onclick="setStatus('${o.key}','attente')">Attente</button>
+        <button class="sbtn encours ${o.statut==='encours'?'active':''}" onclick="setStatus('${o.key}','encours')">En cours</button>
+        <button class="sbtn pret ${o.statut==='pret'?'active':''}" onclick="setStatus('${o.key}','pret')">Prêt</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+setInterval(render,1000);
+setInterval(loadOrders,15000);
+</script>
+</body>
+</html>
