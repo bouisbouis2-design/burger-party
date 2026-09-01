@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Burger Party</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Dancing+Script:wght@700&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+
+.home-page{
+  min-height:100vh;
+  background:url('https://bouisbouis2-design.github.io/burger-party/fond.jpg') center/cover fixed;
+  display:flex;flex-direction:column;align-items:center;
+  padding:20px 16px 40px;position:relative;
+}
+
+
+.site-header{text-align:center;margin-bottom:14px;position:relative;z-index:2;}
+.header-logo{width:110vw;max-width:110vw;margin:0 -5%;display:block;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.3));}
+
+.nom-section{
+  width:100%;max-width:400px;
+  background:rgba(255,252,240,0.94);
+  border:2px solid #c8a84b;border-radius:12px;
+  padding:12px 16px;margin-bottom:12px;
+  position:relative;z-index:2;
+  box-shadow:0 2px 12px rgba(139,94,42,0.15);
+}
+.sec-label{
+  font-family:'Playfair Display',serif;
+  font-size:0.78rem;color:#8B6914;
+  letter-spacing:2px;text-transform:uppercase;
+  margin-bottom:6px;display:block;
+}
+.nom-input{
+  width:100%;padding:8px 10px;
+  border:1.5px solid #c8a84b;border-radius:8px;
+  background:#fffdf0;
+  font-family:'Dancing Script',cursive;font-size:1.2rem;
+  color:#3d1a08;outline:none;
+}
+.nom-input:focus{border-color:#8B6914;}
+.nom-input::placeholder{color:#c4a06a;font-size:1rem;}
+
+.format-section{
+  width:100%;max-width:400px;
+  background:rgba(255,252,240,0.94);
+  border:2px solid #c8a84b;border-radius:12px;
+  padding:12px 16px;margin-bottom:20px;
+  position:relative;z-index:2;
+  box-shadow:0 2px 12px rgba(139,94,42,0.15);
+}
+.format-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;}
+.format-btn{
+  padding:9px;border:1.5px solid #c8a84b;border-radius:8px;
+  background:#fffdf0;cursor:pointer;
+  font-family:'Playfair Display',serif;font-size:0.88rem;color:#5a2008;
+  text-align:center;transition:all 0.15s;letter-spacing:1px;
+}
+.format-btn.sel{background:#8B6914;border-color:#5a2008;color:#fff8e7;}
+
+.menu-title{
+  font-family:'Playfair Display',serif;font-style:italic;
+  font-size:1.05rem;color:#5a2008;
+  letter-spacing:2px;margin-bottom:16px;text-align:center;
+  position:relative;z-index:2;
+}
+.menu-title::before,.menu-title::after{content:'—';margin:0 8px;color:#c8a84b;font-style:normal;}
+
+.burgers-container{
+  width:100%;max-width:400px;
+  display:flex;flex-direction:column;gap:20px;
+  position:relative;z-index:2;
+}
+
+.burger-card{
+  background:rgba(255,252,240,0.96);
+  border:2px solid #c8a84b;border-radius:16px;
+  overflow:hidden;cursor:pointer;
+  box-shadow:0 4px 20px rgba(139,94,42,0.2);
+  transition:all 0.3s;
+}
+.burger-card:active{transform:scale(0.98);}
+
+.burger-img-wrap{
+  width:100%;display:flex;justify-content:center;
+  padding:12px 12px 0;
+  background:linear-gradient(to bottom,#fffbf0,#fdf5e0);
+}
+.burger-img-wrap img{
+  width:105%;max-width:348px;object-fit:contain;
+  filter:drop-shadow(0 4px 12px rgba(0,0,0,0.12));
+  transition:transform 0.3s;
+}
+.burger-card:active .burger-img-wrap img{transform:scale(1.02);}
+
+.burger-card-footer{padding:10px 18px 16px;text-align:center;}
+
+.burger-name{
+  font-family:'Dancing Script',cursive;
+  font-size:1.5rem;color:#5a2008;
+  margin-bottom:6px;
+}
+
+.burger-desc{
+  font-family:'Lato',sans-serif;font-size:0.83rem;
+  color:#6b4423;line-height:1.65;margin-bottom:12px;
+  font-style:italic;
+  border-top:1px solid #e8d5a3;
+  border-bottom:1px solid #e8d5a3;
+  padding:8px 4px;
+}
+
+.select-btn{
+  display:inline-block;
+  background:#8B6914;color:#fff8e7;
+  border:none;border-radius:20px;
+  padding:8px 28px;
+  font-family:'Playfair Display',serif;font-size:0.85rem;
+  letter-spacing:1px;cursor:pointer;
+  box-shadow:0 2px 8px rgba(139,105,20,0.3);
+  transition:all 0.15s;
+}
+.select-btn:active{transform:scale(0.97);background:#5a2008;}
+
+/* PAGE COMMANDE */
+.order-page{display:none;min-height:100vh;background:url('https://bouisbouis2-design.github.io/burger-party/fond.jpg') center/cover fixed;padding:16px;}
+.order-panel{
+  max-width:400px;margin:0 auto;
+  background:rgba(255,252,240,0.97);
+  border:2px solid #c8a84b;border-radius:16px;overflow:hidden;
+  box-shadow:0 4px 24px rgba(139,94,42,0.2);
+}
+.order-header{
+  background:#8B6914;padding:14px 16px;
+  display:flex;align-items:center;gap:12px;
+}
+.back-btn{
+  background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);
+  color:#fff8e7;border-radius:8px;padding:5px 12px;
+  font-family:'Playfair Display',serif;font-size:0.85rem;cursor:pointer;letter-spacing:1px;
+}
+.order-title{font-family:'Dancing Script',cursive;font-size:1.4rem;color:#fff8e7;flex:1;text-align:center;}
+
+.order-burger-img{
+  width:100%;padding:10px;text-align:center;
+  background:linear-gradient(to bottom,#fffbf0,#fdf5e0);
+  border-bottom:1px solid #e8d5a3;
+}
+.order-burger-img img{width:65%;max-width:210px;object-fit:contain;}
+
+.order-body{padding:14px 16px;}
+
+.ingr-sec-label{
+  font-family:'Playfair Display',serif;font-style:italic;
+  font-size:0.9rem;color:#8B6914;
+  margin-bottom:8px;margin-top:14px;
+  display:flex;align-items:center;gap:8px;
+}
+.ingr-sec-label::before{content:'✦';font-style:normal;font-size:0.7rem;}
+.ingr-sec-label::after{content:'';flex:1;height:1px;background:linear-gradient(to right,#c8a84b,transparent);}
+
+.cuisson-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.cuisson-full{grid-column:1/-1;}
+.choice-btn{
+  padding:9px 8px;border:1.5px solid #c8a84b;border-radius:8px;
+  background:#fffbf0;cursor:pointer;
+  font-family:'Playfair Display',serif;font-size:0.82rem;
+  color:#5a2008;text-align:center;transition:all 0.15s;letter-spacing:0.5px;
+}
+.choice-btn.sel{background:#8B6914;border-color:#5a2008;color:#fff8e7;}
+.choice-btn.smash{border-style:dashed;font-style:italic;font-size:0.8rem;}
+
+.ingr-item{
+  display:flex;align-items:center;gap:10px;
+  padding:7px 10px;margin-bottom:4px;
+  border:1.5px solid #e8d5a3;border-radius:8px;
+  background:#fff;cursor:pointer;
+  font-family:'Lato',sans-serif;font-size:0.9rem;color:#3d1a08;
+  transition:all 0.12s;user-select:none;
+}
+.ingr-item.off{background:#f5efe0;border-color:#d4c9b0;}
+.ingr-item.off .ingr-label{text-decoration:line-through;color:#b0a090;}
+.ingr-toggle{
+  width:18px;height:18px;border-radius:3px;
+  border:1.5px solid #c8a84b;background:#fff;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:0.7rem;
+}
+.ingr-item:not(.off) .ingr-toggle{background:#8B6914;border-color:#5a2008;}
+.ingr-item:not(.off) .ingr-toggle::after{content:'✓';color:#fff8e7;font-weight:bold;}
+.ingr-label{flex:1;}
+.ingr-hint{font-size:0.7rem;color:#c4a06a;font-style:italic;}
+
+.textarea{
+  width:100%;padding:8px 10px;
+  border:1.5px solid #c8a84b;border-radius:8px;
+  background:#fffbf0;font-family:'Lato',sans-serif;
+  font-size:0.9rem;color:#3d1a08;
+  resize:none;min-height:60px;outline:none;line-height:1.5;margin-top:4px;
+}
+.textarea:focus{border-color:#8B6914;}
+.textarea::placeholder{color:#c4a06a;font-style:italic;}
+
+.submit-wrap{
+  padding:14px 16px;
+  background:linear-gradient(to bottom,#fdf5e0,#f0e4c0);
+  border-top:1px solid #e8d5a3;margin-top:10px;
+}
+.submit-btn{
+  width:100%;padding:12px;
+  background:#8B6914;color:#fff8e7;
+  border:2px solid #5a2008;border-radius:10px;
+  font-family:'Playfair Display',serif;font-size:0.95rem;
+  letter-spacing:2px;cursor:pointer;transition:all 0.15s;
+}
+.submit-btn:active{transform:scale(0.98);background:#5a2008;}
+.submit-btn:disabled{background:#c4a06a;cursor:not-allowed;}
+.footer-note{text-align:center;font-size:0.72rem;color:#8B6914;font-style:italic;margin-top:6px;font-family:'Lato',sans-serif;}
+
+.err{background:#fde8e8;border:1.5px solid #c0392b;border-radius:8px;color:#8B1A1A;font-size:0.85rem;padding:6px 10px;display:none;margin:8px 0 0;font-family:'Lato',sans-serif;}
+.sending{background:#fffbf0;border:1.5px solid #c8a84b;border-radius:8px;color:#8B6914;font-size:0.85rem;padding:8px 10px;display:none;margin:8px 0 0;text-align:center;font-family:'Lato',sans-serif;}
+
+.success-page{display:none;min-height:100vh;background:url('https://bouisbouis2-design.github.io/burger-party/fond.jpg') center/cover fixed;align-items:center;justify-content:center;padding:20px;}
+.success-card{background:rgba(255,252,240,0.97);border:2px solid #c8a84b;border-radius:16px;padding:30px 20px;text-align:center;max-width:400px;width:100%;box-shadow:0 4px 24px rgba(139,94,42,0.2);}
+.success-card .big{font-family:'Playfair Display',serif;font-size:2rem;color:#8B6914;margin-bottom:10px;}
+.success-card h2{font-family:'Dancing Script',cursive;color:#8B6914;font-size:1.6rem;margin-bottom:6px;}
+.success-card p{font-family:'Lato',sans-serif;font-size:0.9rem;color:#5a2008;line-height:1.6;}
+.sum-box{background:#fffbf0;border:1.5px solid #c8a84b;border-radius:10px;padding:10px 12px;text-align:left;margin-top:12px;font-size:0.88rem;color:#3d1a08;font-family:'Lato',sans-serif;line-height:1.8;}
+.sum-box strong{color:#8B6914;}
+.sum-box .removed{color:#b0a090;text-decoration:line-through;font-size:0.82rem;}
+</style>
+</head>
+<body>
+
+<div class="home-page" id="home-page">
+
+
+  <div class="site-header">
+    <img class="header-logo" src="https://bouisbouis2-design.github.io/burger-party/header.png" alt="Burger Party"/>
+  </div>
+
+  <div class="nom-section">
+    <span class="sec-label">Prénom & Nom</span>
+    <input class="nom-input" id="prenom" type="text" placeholder="Écris ton prénom..." autocomplete="off"/>
+  </div>
+
+  <div class="format-section">
+    <span class="sec-label">Format</span>
+    <div class="format-row">
+      <div class="format-btn" data-g="format" data-v="Adulte" onclick="pickFormat(this)">Adulte</div>
+      <div class="format-btn" data-g="format" data-v="Enfant" onclick="pickFormat(this)">Enfant</div>
+    </div>
+  </div>
+
+  <div class="menu-title">Choisissez votre burger</div>
+
+  <div class="burgers-container">
+
+    <div class="burger-card" onclick="openOrder('saintnec')">
+      <div class="burger-img-wrap">
+        <img src="https://bouisbouis2-design.github.io/burger-party/saint-nec.png" alt="Le Saint Nec"/>
+      </div>
+      <div class="burger-card-footer">
+        <div class="burger-name">Le Saint Nec</div>
+        <div class="burger-desc">Imaginez un Saint-Nectaire fermier qui fond lentement sur un steak haché juteux, nappé d'une sauce béarnaise généreuse et couronné d'un confit d'oignon caramélisé à la perfection. Un burger qui fait fermer les yeux au premier coup de dent.</div>
+        <button class="select-btn">Je choisis celui-ci</button>
+      </div>
+    </div>
+
+    <div class="burger-card" onclick="openOrder('original')">
+      <div class="burger-img-wrap">
+        <img src="https://bouisbouis2-design.github.io/burger-party/original.png" alt="L'Original"/>
+      </div>
+      <div class="burger-card-footer">
+        <div class="burger-name">L'Original</div>
+        <div class="burger-desc">La sauce qui change tout. Relevée d'une moutarde de Charroux qui réveille les papilles, elle enrobe de généreuses tranches de Cheddar fondant sur un steak haché savoureux. Croquant, crémeux, irrésistible — la recette dont on redemande toujours.</div>
+        <button class="select-btn">Je choisis celui-ci</button>
+      </div>
+    </div>
+
+  </div>
+  <div class="err" id="err-home" style="max-width:400px;width:100%;margin-top:10px;position:relative;z-index:2;"></div>
+</div>
+
+<!-- PAGE COMMANDE -->
+<div class="order-page" id="order-page">
+  <div class="order-panel">
+    <div class="order-header">
+      <button class="back-btn" onclick="goHome()">Retour</button>
+      <div class="order-title" id="order-title"></div>
+    </div>
+    <div class="order-burger-img">
+      <img id="order-img" src="" alt="burger"/>
+    </div>
+    <div class="order-body">
+      <div class="ingr-sec-label">Cuisson</div>
+      <div class="cuisson-grid">
+        <div class="choice-btn" data-g="cuisson" data-v="Saignant" onclick="pick(this)">Saignant</div>
+        <div class="choice-btn" data-g="cuisson" data-v="À point" onclick="pick(this)">À point</div>
+        <div class="choice-btn" data-g="cuisson" data-v="Bien cuit" onclick="pick(this)">Bien cuit</div>
+        <div class="choice-btn cuisson-full smash" data-g="cuisson" data-v="Smash Burger" onclick="pick(this)">Smash Burger — écrasé & croustillant</div>
+      </div>
+      <div class="ingr-sec-label">Ingrédients <span class="ingr-hint">— appuie pour retirer</span></div>
+      <div id="ingr-list"></div>
+      <div class="ingr-sec-label">Commentaire</div>
+      <textarea class="textarea" id="comment" placeholder="Allergie, demande spéciale..."></textarea>
+      <div class="err" id="err-order"></div>
+      <div class="sending" id="sending">Envoi en cours...</div>
+    </div>
+    <div class="submit-wrap">
+      <button class="submit-btn" id="submit-btn" onclick="send()">ENVOYER MA COMMANDE</button>
+      <div class="footer-note">— Merci de remplir un bon par personne —</div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE SUCCÈS -->
+<div class="success-page" id="success-page">
+  <div class="success-card">
+    <div class="big">✦ Merci ✦</div>
+    <h2>Commande envoyée !</h2>
+    <p>La cuisine a bien reçu ta commande.<br>Plus qu'à attendre ton burger !</p>
+    <div class="sum-box" id="sum"></div>
+  </div>
+</div>
+
+<script>
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycby8AIAOUy7ZfPOF4uxh_UA6BgUTeHGyHXWdQUzZs1qfKhxCRwGYxULgYW5nW5Q_RXeDRw/exec';
+const BASE='https://bouisbouis2-design.github.io/burger-party/';
+const RECETTES={
+  saintnec:{
+    nom:'Le Saint Nec',img:BASE+'saint-nec.png',
+    ingrs:[{label:'Pain brioché'},{label:'Sauce béarnaise'},{label:'Confit d\'oignon'},{label:'Steak haché'},{label:'Saint-Nectaire fermier'},{label:'Bacon'}]
+  },
+  original:{
+    nom:'L\'Original',img:BASE+'original.png',
+    ingrs:[{label:'Pain brioché'},{label:'Mayo de Charroux'},{label:'Salade'},{label:'Steak haché'},{label:'Cheddar'},{label:'Tomate'},{label:'Cornichon'}]
+  }
+};
+const st={format:'',cuisson:'',recipe:''};
+function pickFormat(el){document.querySelectorAll('.format-btn').forEach(b=>b.classList.remove('sel'));el.classList.add('sel');st.format=el.dataset.v;}
+function pick(el){const g=el.dataset.g;document.querySelectorAll('[data-g="'+g+'"]').forEach(b=>b.classList.remove('sel'));el.classList.add('sel');st.cuisson=el.dataset.v;}
+function toggleIngr(item){item.classList.toggle('off');}
+function showErr(id,m){const e=document.getElementById(id);e.textContent=m;e.style.display='block';e.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>e.style.display='none',4000);}
+function openOrder(key){
+  const p=document.getElementById('prenom').value.trim();
+  if(!p){showErr('err-home','Entre ton prénom avant de choisir !');return;}
+  if(!st.format){showErr('err-home','Choisis un format : Adulte ou Enfant !');return;}
+  const r=RECETTES[key];
+  st.recipe=r.nom;st.cuisson='';
+  document.getElementById('order-title').textContent=r.nom;
+  document.getElementById('order-img').src=r.img;
+  document.querySelectorAll('[data-g="cuisson"]').forEach(b=>b.classList.remove('sel'));
+  document.getElementById('ingr-list').innerHTML=r.ingrs.map(i=>`<div class="ingr-item" onclick="toggleIngr(this)"><div class="ingr-toggle"></div><span class="ingr-label">${i.label}</span></div>`).join('');
+  document.getElementById('comment').value='';
+  document.getElementById('err-order').style.display='none';
+  document.getElementById('sending').style.display='none';
+  document.getElementById('submit-btn').disabled=false;
+  document.getElementById('home-page').style.display='none';
+  document.getElementById('order-page').style.display='block';
+  window.scrollTo(0,0);
+}
+function goHome(){document.getElementById('order-page').style.display='none';document.getElementById('home-page').style.display='flex';window.scrollTo(0,0);}
+async function send(){
+  if(!st.cuisson){showErr('err-order','Choisis une cuisson !');return;}
+  const p=document.getElementById('prenom').value.trim();
+  const actifs=[],retires=[];
+  document.querySelectorAll('#ingr-list .ingr-item').forEach(i=>{
+    const label=i.querySelector('.ingr-label').textContent.trim();
+    if(i.classList.contains('off'))retires.push(label);else actifs.push(label);
+  });
+  const comment=document.getElementById('comment').value.trim();
+  document.getElementById('sending').style.display='block';
+  document.getElementById('submit-btn').disabled=true;
+  const params=new URLSearchParams({prenom:p,format:st.format,recette:st.recipe,cuisson:st.cuisson,retires:retires.length?retires.join(', '):'Aucun',commentaire:comment||''});
+  try{
+    await fetch(SCRIPT_URL+'?'+params.toString());
+    const lines=['<strong>Nom :</strong> '+p,'<strong>Format :</strong> '+st.format,'<strong>Recette :</strong> '+st.recipe,'<strong>Cuisson :</strong> '+st.cuisson,'<strong>Ingrédients :</strong> '+actifs.join(', ')];
+    if(retires.length)lines.push('<span class="removed">Sans : '+retires.join(', ')+'</span>');
+    if(comment)lines.push('<strong>Note :</strong> '+comment);
+    document.getElementById('sum').innerHTML=lines.join('<br>');
+    document.getElementById('order-page').style.display='none';
+    document.getElementById('success-page').style.display='flex';
+    window.scrollTo(0,0);
+  }catch(err){
+    document.getElementById('sending').style.display='none';
+    document.getElementById('submit-btn').disabled=false;
+    showErr('err-order','Erreur réseau, réessaie !');
+  }
+}
+</script>
+</body>
+</html>
