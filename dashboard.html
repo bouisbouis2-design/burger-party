@@ -195,8 +195,8 @@ async function charger(){
     var d=await r.json();
     if(d.status==='ok'){
       d.rows.forEach(function(row){
-        var num=row[2];if(!num)return;
-        var s=row[6]||'attente';
+        var num=row[3];if(!num)return;
+        var s=row[7]||'attente';
         if(!cmds[num]){
           var rawD=String(row[0]);
           var parsedDate;
@@ -285,8 +285,7 @@ function makeTicket(c){
 }
 
 function makeMini(c){
-  var parts=c.articles?c.articles.split(' | '):[];
-  var noms=parts.map(function(p){return p.split(':')[0].trim();}).join(', ');
+  var noms=c.recette||'Burger';
   var div=document.createElement('div');
   div.className='ticket-mini';
   div.innerHTML=
@@ -299,49 +298,51 @@ function makeMini(c){
   return div;
 }
 
-function parseArts(str){
-  if(!str)return '<div class="art-none">Aucun detail</div>';
-  var parts=str.split(' | ');
+function parseArts(c){
   var html='';
-  parts.forEach(function(part){
-    var colon=part.indexOf(':');
-    var name=colon>=0?part.substring(0,colon).trim():part.trim();
-    var details=colon>=0?part.substring(colon+1).trim():'';
-    var nl=name.toLowerCase();
-    var img='';
-    if(nl.indexOf('saint')>=0||nl.indexOf('nec')>=0)img=IMGS.saintnec;
-    else if(nl.indexOf('original')>=0)img=IMGS.original;
+  // Recette
+  var recette=c.recette||'';
+  var nl=recette.toLowerCase();
+  var img='';
+  var nomRecette='Burger';
+  if(nl.indexOf('saintnec')>=0||nl.indexOf('saint')>=0){img=IMGS.saintnec;nomRecette='Le Saint Nec';}
+  else if(nl.indexOf('original')>=0){img=IMGS.original;nomRecette='L\'Original';}
+  else if(recette){nomRecette=recette;}
 
-    html+='<div class="art-row">';
-    if(img)html+='<img class="art-img" src="'+img+'" alt=""/>';
-    else html+='<div style="width:32px;"></div>';
-    html+='<div><div class="art-name">'+name+'</div>';
+  html+='<div class="art-row">';
+  if(img)html+='<img class="art-img" src="'+img+'" alt=""/>';
+  else html+='<div style="width:32px;"></div>';
+  html+='<div><div class="art-name">'+nomRecette+'</div>';
+  html+='<div class="art-opts">';
 
-    if(details){
-      html+='<div class="art-opts">';
-      // Cuisson
-      var cuisson='';
-      if(details.toLowerCase().indexOf('saignant')>=0)cuisson='saignant';
-      else if(details.toLowerCase().indexOf('smash')>=0)cuisson='smash';
-      else if(details.toLowerCase().indexOf('bien cuit')>=0)cuisson='biencuit';
-      else if(details.toLowerCase().indexOf('point')>=0)cuisson='apoint';
-      if(cuisson){
-        var labels={saignant:'Saignant',apoint:'A point',biencuit:'Bien cuit',smash:'Smash'};
-        html+='<span class="opt opt-'+cuisson+'">'+labels[cuisson]+'</span>';
-      }
+  // Cuisson
+  if(c.cuisson){
+    var cl='';
+    var cu=c.cuisson.toLowerCase();
+    if(cu.indexOf('saignant')>=0)cl='saignant';
+    else if(cu.indexOf('smash')>=0)cl='smash';
+    else if(cu.indexOf('bien')>=0)cl='biencuit';
+    else if(cu.indexOf('point')>=0)cl='apoint';
+    var labels={saignant:'Saignant',apoint:'A point',biencuit:'Bien cuit',smash:'Smash'};
+    html+='<span class="opt opt-'+(cl||'apoint')+'">'+(labels[cl]||c.cuisson)+'</span>';
+  }
 
-      // Ingrédients retirés
-      var retires=details.match(/Sans[^,|]*/gi);
-      if(retires){retires.forEach(function(r){html+='<span class="opt opt-retire">'+r.trim()+'</span>';});}
+  // Ingrédients retirés
+  if(c.retires){
+    var rets=c.retires.split(',');
+    rets.forEach(function(r){
+      if(r.trim())html+='<span class="opt opt-retire">Sans '+r.trim()+'</span>';
+    });
+  }
 
-      // Commentaire
-      var comment=details.match(/Commentaire[^|]*/i);
-      if(comment){html+='</div><div class="art-comment">'+comment[0].trim()+'</div><div class="art-opts">';}
+  html+='</div>';
 
-      html+='</div>';
-    }else{html+='<div class="art-none">Sans option</div>';}
-    html+='</div></div>';
-  });
+  // Commentaire
+  if(c.commentaire){
+    html+='<div class="art-comment">'+c.commentaire+'</div>';
+  }
+
+  html+='</div></div>';
   return html;
 }
 
